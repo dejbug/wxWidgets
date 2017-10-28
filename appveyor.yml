@@ -21,6 +21,9 @@ install:
 build_script:
   - echo %APPVEYOR_API_URL%
   - set PATH=C:\MinGW\bin;%PATH%
+  - mingw32-make --version | head -1
+  - g++ --version | head -1
+  - ar --version | head -1
   - set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\bin;%PATH%
   - mingw32-make --version | head -1
   - g++ --version | head -1
@@ -28,7 +31,7 @@ build_script:
   - cd build\msw
   - mingw32-make -j1 -f makefile.gcc CPPFLAGS=-Os SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug
   - echo libwxmsw31u.a : $(wildcard gcc_mswu/*.o) ; ar r $@ $(subst /,\,$^^) > monolib.makefile
-  - mingw32-make -f -j1 monolib.makefile
+  - mingw32-make -f -j1 monolib.makefile CMD=cmd.exe
   - python -c "import os,re; n = '%APPVEYOR_PROJECT_NAME%-' + re.search(r'(?m)^ *DYLIB_CURRENT_VERSION += +(.+) *$', open('..\osx\wxvers.xcconfig').read()).group(1); os.mkdir(n)"
   - cd wxWidgets-*
   - move ..\..\..\include .
