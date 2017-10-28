@@ -29,10 +29,10 @@ build_script:
   - cmd: g++ --version | head -1
   - cmd: ar --version | head -1
   - cmd: cd build\msw
-  - cmd: echo python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
-  - cmd: python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
+  - cmd: echo python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line:re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
+  - cmd: python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line:re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
   - cmd: mingw32-make -j1 --keep-going -f makefile2.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe
-  - cmd: echo libwxmsw31u.a : $(wildcard gcc_mswu/*.o) ; ar rcus $@ $(subst /,\,$^^) > monolib.makefile
+  - cmd: echo libwxmsw31u.a :$(wildcard gcc_mswu/*.o) ; ar rcus $@ $(subst /,\,$^^) > monolib.makefile
   - cmd: mingw32-make -f -j1 monolib.makefile SHELL=cmd.exe
   - cmd: python -c "import os,re; n = '%APPVEYOR_PROJECT_NAME%-' + re.search(r'(?m)^ *DYLIB_CURRENT_VERSION += +(.+) *$', open('..\osx\wxvers.xcconfig').read()).group(1); os.mkdir(n)"
   - cmd: cd wxWidgets-*
