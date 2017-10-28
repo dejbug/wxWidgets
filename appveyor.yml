@@ -14,9 +14,6 @@ clone_folder: c:\projects\$(appveyor_project_name)
 shallow_clone: true
 max_jobs: 1
 
-cache:
-  - c:\projects\$(appveyor_project_name)
-
 # scripts that run after cloning repository
 install:
 
@@ -55,5 +52,4 @@ on_failure:
 
 # after build failure or success
 on_finish:
-  - cmd: mingw32-make -j1 --keep-going -f makefile2.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe clean
   - cmd: echo DONE
