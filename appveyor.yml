@@ -22,25 +22,25 @@ install:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - echo %APPVEYOR_API_URL%
-  - set APPVEYOR_SAVE_CACHE_ON_ERROR=true
-  - set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin;%PATH%
-  - mingw32-make --version | head -1
-  - g++ --version | head -1
-  - ar --version | head -1
-  - cd build\msw
-  - echo python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
-  - python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
-  - mingw32-make -j1 --keep-going -f makefile2.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe
-  - echo libwxmsw31u.a : $(wildcard gcc_mswu/*.o) ; ar rcus $@ $(subst /,\,$^^) > monolib.makefile
-  - mingw32-make -f -j1 monolib.makefile SHELL=cmd.exe
-  - python -c "import os,re; n = '%APPVEYOR_PROJECT_NAME%-' + re.search(r'(?m)^ *DYLIB_CURRENT_VERSION += +(.+) *$', open('..\osx\wxvers.xcconfig').read()).group(1); os.mkdir(n)"
-  - cd wxWidgets-*
-  - move ..\..\..\include .
-  - mkdir lib
-  - move ..\*.a lib
-  - move ..\..\..\lib\gcc_lib\mswu lib
-  - 7z a ..\..\..\%APPVEYOR_PROJECT_NAME%-pr%APPVEYOR_BUILD_NUMBER%.7z .
+  - cmd: echo %APPVEYOR_API_URL%
+  - cmd: set APPVEYOR_SAVE_CACHE_ON_ERROR=true
+  - cmd: set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin;%PATH%
+  - cmd: mingw32-make --version | head -1
+  - cmd: g++ --version | head -1
+  - cmd: ar --version | head -1
+  - cmd: cd build\msw
+  - cmd: echo python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
+  - cmd: python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); open('makefile2.gcc', 'wb').write('\n'.join(lines))"
+  - cmd: mingw32-make -j1 --keep-going -f makefile2.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe
+  - cmd: echo libwxmsw31u.a : $(wildcard gcc_mswu/*.o) ; ar rcus $@ $(subst /,\,$^^) > monolib.makefile
+  - cmd: mingw32-make -f -j1 monolib.makefile SHELL=cmd.exe
+  - cmd: python -c "import os,re; n = '%APPVEYOR_PROJECT_NAME%-' + re.search(r'(?m)^ *DYLIB_CURRENT_VERSION += +(.+) *$', open('..\osx\wxvers.xcconfig').read()).group(1); os.mkdir(n)"
+  - cmd: cd wxWidgets-*
+  - cmd: move ..\..\..\include .
+  - cmd: mkdir lib
+  - cmd: move ..\*.a lib
+  - cmd: move ..\..\..\lib\gcc_lib\mswu lib
+  - cmd: 7z a ..\..\..\%APPVEYOR_PROJECT_NAME%-pr%APPVEYOR_BUILD_NUMBER%.7z .
 
 deploy:
   - provider: Environment
@@ -48,13 +48,13 @@ deploy:
 
 # on successful build
 on_success:
-  - echo OK build
+  - cmd: echo OK build
 
 # on build failure
 on_failure:
-  - echo build FAILED
+  - cmd: echo build FAILED
 
 # after build failure or success
 on_finish:
-  - mingw32-make -j1 --keep-going -f makefile.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe clean
-  - echo DONE
+  - cmd: mingw32-make -j1 --keep-going -f makefile.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe clean
+  - cmd: echo DONE
