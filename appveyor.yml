@@ -29,9 +29,9 @@ build_script:
   - g++ --version | head -1
   - ar --version | head -1
   - cd build\msw
-  - mingw32-make -j1 -f makefile.gcc CPPFLAGS=-Os SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug
+  - mingw32-make -j1 -f makefile.gcc CPPFLAGS=-Os SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe
   - echo libwxmsw31u.a : $(wildcard gcc_mswu/*.o) ; ar r $@ $(subst /,\,$^^) > monolib.makefile
-  - mingw32-make -f -j1 monolib.makefile CMD=cmd.exe
+  - mingw32-make -f -j1 monolib.makefile SHELL=cmd.exe
   - python -c "import os,re; n = '%APPVEYOR_PROJECT_NAME%-' + re.search(r'(?m)^ *DYLIB_CURRENT_VERSION += +(.+) *$', open('..\osx\wxvers.xcconfig').read()).group(1); os.mkdir(n)"
   - cd wxWidgets-*
   - move ..\..\..\include .
