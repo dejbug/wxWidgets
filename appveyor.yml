@@ -14,23 +14,22 @@ clone_folder: c:\projects\$(appveyor_project_name)
 shallow_clone: true
 max_jobs: 1
 
+cache:
+  - wxWidgets
+
 # scripts that run after cloning repository
 install:
-  - dir /S/B/ON
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - echo %APPVEYOR_API_URL%
-  - set PATH=C:\MinGW\bin;%PATH%
-  - mingw32-make --version | head -1
-  - g++ --version | head -1
-  - ar --version | head -1
   - set PATH=C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin;%PATH%
   - mingw32-make --version | head -1
   - g++ --version | head -1
   - ar --version | head -1
   - cd build\msw
-  - mingw32-make -j1 --keep-going -f makefile.gcc __OPTIMIZEFLAG=-Os CPPFLAGS="-std=c++11 -Wno-deprecated-declarations" SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe
+  - python -c "file = open('makefile.gcc', 'rb'); lines = (line.strip('\r\n') for line in file); import re; is_ar = lambda line: re.match(r'(?m)^^[ \t]*(?:ar *rcu|ranlib *).*', line); lines = (line for line in lines if not is_ar(line)); print '\n'.join(lines)" > makefile2.gcc
+  - mingw32-make -j1 --keep-going -f makefile2.gcc __OPTIMIZEFLAG=-Os CPPFLAGS=-Wno-deprecated-declarations CXXFLAGS=-std=c++11 SHARED=0 UNICODE=1 BUILD=release VENDOR=dejbug SHELL=cmd.exe
   - echo libwxmsw31u.a : $(wildcard gcc_mswu/*.o) ; ar rcus $@ $(subst /,\,$^^) > monolib.makefile
   - mingw32-make -f -j1 monolib.makefile SHELL=cmd.exe
   - python -c "import os,re; n = '%APPVEYOR_PROJECT_NAME%-' + re.search(r'(?m)^ *DYLIB_CURRENT_VERSION += +(.+) *$', open('..\osx\wxvers.xcconfig').read()).group(1); os.mkdir(n)"
